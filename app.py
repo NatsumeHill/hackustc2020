@@ -1,4 +1,5 @@
-import autoreport
+import lib.autoreport as autoreport
+import schedule
 
 healthCondition = {
         'now_address': '1', #1:内地，2:香港🇭🇰，3:澳门，4:台湾，5:国外
@@ -25,5 +26,11 @@ healthCondition = {
         'other_detail': '', #其他情况说明
     }
 
-if __name__ == "__main__":
+def job():
     autoreport.doReport('***', '***', healthCondition)
+
+if __name__ == "__main__":
+    schedule.every().day.do(job)
+    # autoreport.doReport('***', '***', healthCondition)
+    while True:
+        schedule.run_pending()
