@@ -1,5 +1,7 @@
 import lib.autoreport as autoreport
+from lib.utils import loadConfigFile, doEmailLog
 import schedule
+import argparse
 
 healthCondition = {
         'now_address': '1', #1:内地，2:香港🇭🇰，3:澳门，4:台湾，5:国外
@@ -25,11 +27,25 @@ healthCondition = {
         'return_dest_detail': '苏州研究院', # 具体地点
         'other_detail': '', #其他情况说明
     }
+username = '***'
+userpass = '***'
+notifyConfig = dict()
 
 def job():
-    autoreport.doReport('***', '***', healthCondition)
+    ret = autoreport.doReport(username, userpass, healthCondition)
+    doEmailLog(notifyConfig, ret)
 
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description='Process some integers.')
+    parser.add_argument('-p','--path', action='store', dest='path', help='config path')
+    args = parser.parse_args()
+    if args.path is not None:
+        config = loadConfigFile(args.path)
+        username = config['username']
+        userpass = config['userpass']
+        healthCondition = config['healthCondition']
+        notifyConfig = config
+
     schedule.every().day.do(job)
     # autoreport.doReport('***', '***', healthCondition)
     while True:

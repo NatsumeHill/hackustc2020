@@ -9,6 +9,7 @@ from email.header import Header
 from email.mime.text import MIMEText
 from email.utils import parseaddr, formataddr
 import smtplib
+import json
 
 timeStampReg = '(20\d{2}([\.\-/|年月\s]{1,3}\d{1,2}){2}日?(\s?\d{2}:\d{2}(:\d{2})?)?)|(\d{1,2}\s?(分钟|小时|天)前)'
 
@@ -23,8 +24,11 @@ def _format_addr(s):
     name, addr = parseaddr(s)
     return formataddr((Header(name, 'utf-8').encode(), addr))
 
-def doEmailLog(config):
-    msg = MIMEText('USTC 2020 report success...', 'plain', 'utf-8')
+def doEmailLog(config, succeed):
+    msgStr = 'USTC 2020 report success...'
+    if not succeed:
+        msgStr = 'USTC 2020 report faield...'
+    msg = MIMEText(msgStr, 'plain', 'utf-8')
     msg['From'] = 'ustc2020<{}>'.format(config['from_addr'])
     msg['To'] = 'mailing<{}>'.format(config['to_addr'])
     msg['Subject'] = Header('USTC2020', 'utf-8')
@@ -32,6 +36,11 @@ def doEmailLog(config):
 
     server = smtplib.SMTP(config['smtp_server'], 25)
     server.set_debuglevel(1)
-    server.login(config['from_addr'], config['pass'])
+    server.login(config['from_addr'], config['from_pass'])
     server.sendmail(config['from_addr'],config['to_addr'],msg.as_string())
     server.quit()
+
+def loadConfigFile(path):
+    with open(path) as configFile:
+        config = json.load(configFile)
+        return config
