@@ -1,6 +1,8 @@
 {
-    "username":"SA17225416",
-    "userpass":"pass",
+    "userConfig":{
+        "username":"SA17225416",
+        "userpass":"pass"
+    },
     "healthCondition":{
         "now_address": "1", 
         "gps_now_address": "1", 
@@ -25,8 +27,15 @@
         "return_dest_detail": "苏州研究院", 
         "other_detail": ""
     },
-    "from_addr":"",
-    "smtp_server":"",
-    "from_pass":"",
-    "to_addr":""
+    "notifyConfig":{
+        "email_on": false,
+        "from_addr":"",
+        "smtp_server":"",
+        "from_pass":"",
+        "to_addr":"",
+        "sms_on":false,
+        "ak":"",
+        "secret":"",
+        "to_phone":""
+    }
 }

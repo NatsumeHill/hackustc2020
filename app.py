@@ -1,5 +1,5 @@
 import lib.autoreport as autoreport
-from lib.utils import loadConfigFile, doEmailLog
+from lib.utils import loadConfigFile, doEmailLog, doSMSLog
 import schedule
 import argparse
 
@@ -27,13 +27,15 @@ healthCondition = {
         'return_dest_detail': '苏州研究院', # 具体地点
         'other_detail': '', #其他情况说明
     }
-username = '***'
-userpass = '***'
+userConfig = {'username':'***', 'userpass':'***'}
 notifyConfig = dict()
 
 def job():
-    ret = autoreport.doReport(username, userpass, healthCondition)
-    doEmailLog(notifyConfig, ret)
+    ret = autoreport.doReport(userConfig, healthCondition)
+    if notifyConfig['email_on'] is True:
+        doEmailLog(notifyConfig, ret)
+    if notifyConfig['sms_on'] is True:
+        doSMSLog(notifyConfig, ret)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Process some integers.')
@@ -41,10 +43,9 @@ if __name__ == "__main__":
     args = parser.parse_args()
     if args.path is not None:
         config = loadConfigFile(args.path)
-        username = config['username']
-        userpass = config['userpass']
+        userConfig = config['userConfig']
         healthCondition = config['healthCondition']
-        notifyConfig = config
+        notifyConfig = config['notifyConfig']
 
     schedule.every().day.do(job)
     # autoreport.doReport('***', '***', healthCondition)

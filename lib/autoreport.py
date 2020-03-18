@@ -15,7 +15,7 @@ from bs4 import BeautifulSoup
 @healthCondition: 健康状况数据
 @retutn False-失败 True-成功
 """
-def doReport(username, userpass, healthCondition):
+def doReport(userConfig, healthCondition):
     loginUrl = 'https://passport.ustc.edu.cn/login'
     reportUrl = 'http://weixine.ustc.edu.cn/2020/daliy_report'
     loginPayload = {
@@ -35,8 +35,8 @@ def doReport(username, userpass, healthCondition):
     r = s.get(loginUrl, params = {'service':'http://weixine.ustc.edu.cn/2020/caslogin'})
 
     # 调用protal登录
-    loginPayload['username'] = username
-    loginPayload['password'] = userpass
+    loginPayload['username'] = userConfig['username']
+    loginPayload['password'] = userConfig['userpass']
     r = s.post(loginUrl, data=loginPayload, verify=False)
     if r.status_code == 200 and r.history.__len__() != 0:
         print('::== login ok')
